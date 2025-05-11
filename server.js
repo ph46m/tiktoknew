@@ -11,7 +11,7 @@ const PORT = 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static('public'));
+app.use(express.static(''));
 
 // Função para ler os dados dos usuários do arquivo JSON
 function readUsersFromFile() {
@@ -353,23 +353,23 @@ app.get('/search', async (req, res) => {
 
 // Rota para servir o index.html na raiz
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 // Rota para servir o index.html na raiz
 app.get('/login', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'login.html'));
+  res.sendFile(path.join(__dirname, 'login.html'));
 });
 // Rota para servir o index.html na raiz
 app.get('/registro', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'register.html'));
+  res.sendFile(path.join(__dirname, 'register.html'));
 });
 // Rota para servir o index.html na raiz
 app.get('/src', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'search.html'));
+  res.sendFile(path.join(__dirname, 'search.html'));
 });
 // Rota para servir o index.html na raiz
 app.get('/perfil', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'profile.html'));
+  res.sendFile(path.join(__dirname, 'profile.html'));
 });
 
 
