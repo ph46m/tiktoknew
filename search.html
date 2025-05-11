@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Resultados da Pesquisa - VibeFlow</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html, body {
+      height: 100%;
+      background: linear-gradient(135deg, #0e0e12, #1a1a25);
+      color: #f4f4f4;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    .sidebar {
+      width: 70px;
+      background: #1a1a25;
+      position: fixed;
+      left: 0;
+      top: 0;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 0;
+      z-index: 100;
+      transition: width 0.3s ease;
+      box-shadow: 4px 0 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .sidebar:hover {
+      width: 180px;
+    }
+
+    .sidebar .logo {
+      font-size: 20px;
+      color: #8a2be2;
+      margin-bottom: 30px;
+      font-weight: bold;
+      text-shadow: 0 0 5px #8a2be2;
+    }
+
+    .sidebar a {
+      text-decoration: none;
+      color: #ccc;
+      text-align: center;
+      margin: 20px 0;
+      opacity: 0.7;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    .sidebar a:hover {
+      opacity: 1;
+      color: #fff;
+      background: rgba(138, 43, 226, 0.1);
+    }
+
+    .sidebar a span:first-child {
+      font-size: 20px;
+    }
+
+    .sidebar a span:last-child {
+      display: none;
+      font-size: 14px;
+      margin-top: 5px;
+    }
+
+    .sidebar:hover a span:last-child {
+      display: block;
+    }
+
+    .container {
+      margin-left: 80px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .header {
+      position: sticky;
+      top: 0;
+      background: rgba(18, 18, 28, 0.9);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 90;
+      margin-bottom: 20px;
+    }
+
+    .header .search-bar {
+      flex: 1;
+      margin-left: 20px;
+      position: relative;
+    }
+
+    .header .search-bar input {
+      width: 100%;
+      padding: 10px 40px 10px 15px;
+      border-radius: 25px;
+      border: none;
+      background: #2b2b3d;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+      transition: background 0.3s ease;
+    }
+
+    .header .search-bar input:focus {
+      background: #3d3d50;
+    }
+
+    .header .search-bar::before {
+      content: '🔍';
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 18px;
+      color: #aaa;
+    }
+
+    .header .user img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid #8a2be2;
+      box-shadow: 0 0 6px #8a2be2;
+      transition: transform 0.3s ease;
+      cursor: pointer;
+    }
+
+    .header .user img:hover {
+      transform: scale(1.1);
+    }
+
+    .video-wrapper {
+      display: flex;
+      flex-direction: row;
+      gap: 15px;
+      width: 100%;
+      overflow-x: auto;
+      padding-bottom: 10px;
+    }
+
+    .video-item {
+      flex: 0 0 auto;
+      background: #1f1f2f;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 0 8px rgba(138, 43, 226, 0.2);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      aspect-ratio: 9/16;
+      max-height: 40vh;
+      position: relative;
+    }
+
+    .video-item:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 12px rgba(138, 43, 226, 0.4);
+    }
+
+    .video-item video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .video-info {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      padding: 8px 12px;
+      font-size: 14px;
+      border-radius: 8px;
+      backdrop-filter: blur(4px);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .video-info p {
+      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .video-info .music {
+      font-size: 12px;
+      opacity: 0.9;
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 30px;
+      font-size: 18px;
+      color: #8a2be2;
+      font-weight: 500;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        display: none;
+      }
+      .container {
+        margin-left: 0;
+      }
+      .header {
+        flex-direction: column;
+        gap: 10px;
+      }
+      .video-wrapper {
+        flex-direction: column;
+        gap: 10px;
+        overflow-x: hidden;
+      }
+      .video-item {
+        max-height: 35vh;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .video-item {
+        max-height: 30vh;
+      }
+      .header .search-bar input {
+        font-size: 12px;
+        padding: 8px 35px 8px 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="logo">VibeFlow</div>
+    <a href="index.html"><span>🏠</span><span>Lobby</span></a>
+    <a href="profile.html"><span>👤</span><span>Perfil</span></a>
+    <a href="login.html"><span>🔐</span><span>Login</span></a>
+    <a href="register.html"><span>📝</span><span>Registro</span></a>
+    <a href="#"><span>⋯</span><span>Mais</span></a>
+  </div>
+
+  <div class="container">
+    <div class="header">
+      <div class="user">
+        <img src="https://i.pinimg.com/736x/e2/ea/0e/e2ea0e96d8001b581f4be4d19585f390.jpg" alt="User" onclick="goToProfile(localStorage.getItem('currentUser'))" />
+      </div>
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Pesquisar vídeos..." onkeypress="handleSearchEnter(event)" />
+      </div>
+    </div>
+
+    <div class="video-wrapper" id="videoWrapper"></div>
+  </div>
+
+  <script>
+    const currentUser = localStorage.getItem('currentUser');
+    const baseUrl = window.location.origin;
+
+    if (!currentUser) {
+      window.location.href = 'login.html';
+    }
+
+    async function fetchVideos(query) {
+      try {
+        console.log(`Tentando buscar vídeos com query: ${query}`);
+        const res = await fetch(`${baseUrl}/src?query=${encodeURIComponent(query)}`);
+        if (!res.ok) {
+          const errorText = await res.text();
+          console.error(`Erro HTTP: ${res.status} - ${errorText}`);
+          throw new Error(`Erro HTTP: ${res.status}`);
+        }
+        const data = await res.json();
+        console.log('Dados recebidos:', data);
+
+        if (!data.resultado || !Array.isArray(data.resultado)) {
+          console.error('Formato de dados inválido:', data);
+          return [];
+        }
+
+        // Ajustar o filtro para ser mais tolerante
+        const videos = data.resultado.filter(v => {
+          const hasNoWatermark = v && typeof v.no_watermark === 'string' && v.no_watermark.trim() !== '';
+          if (!hasNoWatermark) {
+            console.log('Vídeo rejeitado por falta de no_watermark:', v);
+          }
+          return hasNoWatermark;
+        });
+        console.log('Vídeos filtrados:', videos);
+        return videos;
+      } catch (err) {
+        console.error('Erro ao carregar vídeos:', err.message);
+        return [];
+      }
+    }
+
+    function goToProfile(username) {
+      if (username && username !== currentUser) {
+        localStorage.setItem('viewedUser', username);
+        window.location.href = 'profile.html';
+      }
+    }
+
+    async function loadSearchResults() {
+      const params = new URLSearchParams(window.location.search);
+      const query = params.get('query');
+      if (!query) {
+        document.getElementById('videoWrapper').innerHTML = '<div class="no-results">Nenhuma pesquisa realizada.</div>';
+        return;
+      }
+
+      document.getElementById('searchInput').value = query;
+      const videos = await fetchVideos(query);
+      const videoWrapper = document.getElementById('videoWrapper');
+
+      if (videos.length === 0) {
+        document.getElementById('videoWrapper').innerHTML = '<div class="no-results">Nenhum resultado encontrado para "' + query + '". Verifique a conexão com o servidor ou tente outro termo de busca.</div>';
+        return;
+      }
+
+      // Exibir até 8 vídeos em uma linha horizontal
+      videoWrapper.innerHTML = '';
+      for (let i = 0; i < Math.min(8, videos.length); i++) {
+        const video = videos[i];
+        const videoItem = document.createElement('div');
+        videoItem.className = 'video-item';
+        videoItem.innerHTML = `
+          <video controls>
+            <source src="${video.no_watermark}" type="video/mp4" />
+            Seu navegador não suporta o elemento de vídeo.
+          </video>
+          <div class="video-info">
+            <p>${video.title || 'Sem título'}</p>
+            <div class="music">${video.music?.title || 'Música Desconhecida'}</div>
+          </div>
+        `;
+        videoWrapper.appendChild(videoItem);
+      }
+    }
+
+    function handleSearchEnter(event) {
+      if (event.key === 'Enter') {
+        const query = document.getElementById('searchInput').value.trim();
+        if (query) {
+          window.location.href = `src?query=${encodeURIComponent(query)}`;
+        }
+      }
+    }
+
+    loadSearchResults();
+  </script>
+</body>
+</html>

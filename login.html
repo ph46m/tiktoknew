@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>VibeFlow - Login</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1a0a0a, #000);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .login-container {
+      width: 90%;
+      max-width: 400px;
+      padding: 3vh;
+      background: linear-gradient(135deg, #2c0b0b, #1a0a0a);
+      border-radius: 20px;
+      box-shadow: 0 0 30px rgba(255, 69, 69, 0.3);
+      animation: fadeIn 0.5s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .login-container h2 {
+      text-align: center;
+      margin-bottom: 4vh;
+      font-size: clamp(24px, 6vw, 28px);
+      color: #ff4545;
+      text-shadow: 0 0 15px #ff4545;
+    }
+    .login-container input {
+      width: 100%;
+      padding: 2vh;
+      margin: 2vh 0;
+      border: none;
+      border-radius: 10px;
+      background: #333;
+      color: #fff;
+      font-size: clamp(14px, 4vw, 16px);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      transition: box-shadow 0.3s ease;
+    }
+    .login-container input:focus {
+      box-shadow: 0 0 15px #ff4545;
+    }
+    .login-container button {
+      width: 100%;
+      padding: 2vh;
+      margin: 2.5vh 0;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(45deg, #ff4545, #ff8c8c);
+      color: #fff;
+      cursor: pointer;
+      font-size: clamp(16px, 4.5vw, 18px);
+      box-shadow: 0 5px 15px rgba(255, 69, 69, 0.4);
+      transition: transform 0.3s ease;
+    }
+    .login-container button:hover {
+      transform: scale(1.05);
+    }
+    .login-container p {
+      text-align: center;
+      margin-top: 2vh;
+      font-size: clamp(12px, 3.5vw, 14px);
+      color: #ff8c8c;
+    }
+    .login-container p a {
+      color: #ff4545;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    .login-container p a:hover {
+      color: #ff8c8c;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h2>VibeFlow - Login</h2>
+    <input type="text" id="username" placeholder="Usuário" />
+    <input type="password" id="password" placeholder="Senha" />
+    <button onclick="login()">Entrar</button>
+    <p>Não tem conta? <a href="/registro">Registre-se</a></p>
+  </div>
+
+  <script>
+    const baseUrl = window.location.origin;
+
+    async function login() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      try {
+        const res = await fetch(`${baseUrl}/api/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        if (!res.ok) throw new Error(`Erro HTTP: ${res.status}`);
+        const data = await res.json();
+        if (data.sucesso) {
+          localStorage.setItem('currentUser', username);
+          window.location.href = '/';
+        } else {
+          throw new Error('Credenciais inválidas');
+        }
+      } catch (err) {
+        alert(`Erro ao fazer login: ${err.message}`);
+        console.error(err);
+      }
+    }
+  </script>
+</body>
+</html>
